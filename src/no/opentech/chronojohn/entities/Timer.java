@@ -21,7 +21,7 @@ public class Timer implements Serializable {
     }
     
     public static Timer getDefaultTimer() {
-        Timer t = new Timer("Default", 0);
+        Timer t = new Timer("New timer...", 0);
         t.setDefaultTimer(true);
         return t;
     }
