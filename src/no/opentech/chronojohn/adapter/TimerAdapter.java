@@ -38,7 +38,7 @@ public class TimerAdapter extends ArrayAdapter<Timer> {
             text.setTextColor(Color.LTGRAY);
             text.setText(timer.getName());
             summary.setTextColor(Color.CYAN);
-            summary.setText((timer.isDefaultTimer()) ? "Create a new timer" : "Duration : " + timer.getSeconds());
+            summary.setText((null != timer.getDescription() && timer.getDescription().length() > 0) ? timer.getDescription() : "Duration : " + timer.getSeconds());
         }
         return v;
     }

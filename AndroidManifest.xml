@@ -13,5 +13,6 @@
         </activity>
         <activity android:name=".activities.TimerActivity"/>
         <activity android:name=".activities.NewTimerActivity"/>
+        <activity android:name=".activities.QuickTimerActivity"/>
     </application>
 </manifest>

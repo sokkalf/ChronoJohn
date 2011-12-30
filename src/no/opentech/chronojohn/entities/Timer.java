@@ -14,6 +14,15 @@ public class Timer implements Serializable {
     private String description;
     private Date created;
     private boolean defaultTimer;
+    private boolean quickTimer;
+
+    public boolean isQuickTimer() {
+        return quickTimer;
+    }
+
+    public void setQuickTimer(boolean quickTimer) {
+        this.quickTimer = quickTimer;
+    }
 
     public Timer(String name, int seconds) {
         this.name = name;
@@ -23,6 +32,14 @@ public class Timer implements Serializable {
     public static Timer getDefaultTimer() {
         Timer t = new Timer("New timer...", 0);
         t.setDefaultTimer(true);
+        t.setDescription("Create a new timer...");
+        return t;
+    }
+    
+    public static Timer getQuickTimer() {
+        Timer t = new Timer("Quick...", 0);
+        t.setDescription("Just time something");
+        t.setQuickTimer(true);
         return t;
     }
     

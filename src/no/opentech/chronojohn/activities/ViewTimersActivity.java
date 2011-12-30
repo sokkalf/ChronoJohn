@@ -41,6 +41,8 @@ public class ViewTimersActivity extends ListActivity {
                 
                 if(selected.isDefaultTimer()) {
                     newTimer();
+                } else if(selected.isQuickTimer()) {
+                    quickTimer();
                 }
             }
         });
@@ -48,6 +50,11 @@ public class ViewTimersActivity extends ListActivity {
 
     public void newTimer() {
         Intent intent = new Intent(this, NewTimerActivity.class);
+        startActivity(intent);
+    }
+    
+    public void quickTimer() {
+        Intent intent = new Intent(this, QuickTimerActivity.class);
         startActivity(intent);
     }
 }

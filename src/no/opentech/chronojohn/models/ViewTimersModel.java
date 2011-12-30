@@ -14,6 +14,7 @@ public class ViewTimersModel {
     
     public ViewTimersModel() {
         timers = new ArrayList<Timer>();
+        timers.add(Timer.getQuickTimer());
         timers.add(Timer.getDefaultTimer());
     }
 
