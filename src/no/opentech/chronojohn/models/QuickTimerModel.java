@@ -43,6 +43,7 @@ public class QuickTimerModel {
     private int seconds;
     private EditText hourField, minuteField, secondField;
     private Timer timer;
+    private boolean editing = false;
 
     public QuickTimerModel(EditText hour, EditText minute, EditText second) {
         this.hourField = hour;
@@ -53,6 +54,14 @@ public class QuickTimerModel {
         setSecond(secondFieldValue);
     }
 
+    public boolean isEditing() {
+        return editing;
+    }
+
+    public void setEditing(boolean editing) {
+        this.editing = editing;
+    }
+
     public int getHour() {
         return hourFieldValue;
     }
@@ -61,7 +70,7 @@ public class QuickTimerModel {
         if(hourField > MAX_HOUR) hourField = 0;
         if(hourField < 0) hourField = MAX_HOUR;
         this.hourFieldValue = hourField;
-        this.hourField.setText(String.format("%d", this.hourFieldValue));
+        if(!editing) this.hourField.setText(String.format("%d", this.hourFieldValue));
         updateSeconds();
     }
 
@@ -73,7 +82,7 @@ public class QuickTimerModel {
         if(minuteField > MAX_MINUTE) minuteField = 0;
         if(minuteField < 0) minuteField = MAX_MINUTE;
         this.minuteFieldValue = minuteField;
-        this.minuteField.setText(String.format("%02d", this.minuteFieldValue));
+        if(!editing) this.minuteField.setText(String.format("%02d", this.minuteFieldValue));
         updateSeconds();
     }
 
@@ -85,7 +94,7 @@ public class QuickTimerModel {
         if(secondField > MAX_SECOND) secondField = 0;
         if(secondField < 0) secondField = MAX_SECOND;
         this.secondFieldValue = secondField;
-        this.secondField.setText(String.format("%02d", this.secondFieldValue));
+        if(!editing) this.secondField.setText(String.format("%02d", this.secondFieldValue));
         updateSeconds();
     }
 

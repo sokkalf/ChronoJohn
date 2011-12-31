@@ -23,12 +23,16 @@
 package no.opentech.chronojohn.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import no.opentech.chronojohn.R;
 import no.opentech.chronojohn.filters.InputFilterMinMax;
 import no.opentech.chronojohn.models.QuickTimerModel;
@@ -58,9 +62,10 @@ public class QuickTimerActivity extends Activity {
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 log.debug("Starting timer : " + model.getSeconds() + " seconds");
+                startTimer();
             }
         });
-
+        
         // hours/minutes/seconds fields
         EditText hourField = (EditText) findViewById(R.id.edit_hours);
         EditText minuteField = (EditText) findViewById(R.id.edit_minutes);
@@ -69,6 +74,17 @@ public class QuickTimerActivity extends Activity {
         hourField.setFilters(new InputFilter[] {new InputFilterMinMax(0, QuickTimerModel.MAX_HOUR)});
         minuteField.setFilters(new InputFilter[] {new InputFilterMinMax(0, QuickTimerModel.MAX_MINUTE)});
         secondField.setFilters(new InputFilter[] {new InputFilterMinMax(0, QuickTimerModel.MAX_SECOND)});
+        FocusWatcher focusWatcher = new FocusWatcher();
+        EditTextWatcher hourTextWatcher = new EditTextWatcher(hourField);
+        EditTextWatcher minueTextWatcher = new EditTextWatcher(minuteField);
+        EditTextWatcher secondTextWatcher = new EditTextWatcher(secondField);
+
+        hourField.setOnFocusChangeListener(focusWatcher);
+        minuteField.setOnFocusChangeListener(focusWatcher);
+        secondField.setOnFocusChangeListener(focusWatcher);
+        hourField.addTextChangedListener(hourTextWatcher);
+        minuteField.addTextChangedListener(minueTextWatcher);
+        secondField.addTextChangedListener(secondTextWatcher);
         
         // up/down buttons
         Button hoursUpButton = (Button) findViewById(R.id.hours_up);
@@ -87,6 +103,16 @@ public class QuickTimerActivity extends Activity {
 
     }
     
+    public void startTimer() {
+        if(model.getSeconds() == 0) {
+            Toast.makeText(this, "Beep beep", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent timerIntent = new Intent(this, TimerActivity.class);
+        timerIntent.putExtra("timerSeconds", model.getSeconds());
+        startActivity(timerIntent);
+    }
+    
     private class ButtonListener implements View.OnClickListener {
         public void onClick(View view) {
             if(view.equals(findViewById(R.id.hours_up))) {
@@ -102,6 +128,50 @@ public class QuickTimerActivity extends Activity {
             } else if(view.equals(findViewById(R.id.seconds_down))) {
                 model.decrementSecond();
             }
+        }
+    }
+
+    private class EditTextWatcher implements TextWatcher {
+        private EditText textField;
+
+        public EditTextWatcher(EditText text) {
+            this.textField = text;
+        }
+
+        public void afterTextChanged(Editable s) {
+            model.setEditing(false);
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+            model.setEditing(true);
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before,
+                                  int count) {
+            try {
+                if (textField.equals(findViewById(R.id.edit_hours)))
+                    model.setHour(Integer.parseInt(textField.getText().toString()));
+                else if (textField.equals(findViewById(R.id.edit_minutes)))
+                    model.setMinute(Integer.parseInt(textField.getText().toString()));
+                else if (textField.equals(findViewById(R.id.edit_seconds)))
+                    model.setSecond(Integer.parseInt(textField.getText().toString()));
+            } catch (NumberFormatException nfe) {
+                log.debug("NumberFormatException");
+            }
+
+        }
+    }
+    
+    private class FocusWatcher implements View.OnFocusChangeListener {
+        public void onFocusChange(View view, boolean hasFocus) {
+           if(hasFocus) {
+               model.setEditing(true);
+               ((EditText) view).setText("00");
+               ((EditText) view).setSelection(0, ((EditText) view).getText().length());
+           } else {
+               model.setEditing(false);
+           }
         }
     }
 }
