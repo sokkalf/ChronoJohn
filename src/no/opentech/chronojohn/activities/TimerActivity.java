@@ -46,7 +46,7 @@ public class TimerActivity extends Activity {
         hourField = (TextView) findViewById(R.id.hours);
         minuteField = (TextView) findViewById(R.id.minutes);
         secondField = (TextView) findViewById(R.id.seconds);
-
+        updateView();
         new CountDownTimer(seconds * 1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
