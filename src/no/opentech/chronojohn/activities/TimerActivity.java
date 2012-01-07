@@ -51,37 +51,38 @@ public class TimerActivity extends Activity {
         setContentView(R.layout.timer);
         seconds = initalSeconds = getIntent().getIntExtra("timerSeconds", 0);
         startTimeStamp = System.currentTimeMillis();
-        
-        if(savedInstanceState != null) {
+
+        if (savedInstanceState != null) {
             initalSeconds = savedInstanceState.getInt("initialSeconds");
             startTimeStamp = savedInstanceState.getLong("startTimeStamp");
-            if(System.currentTimeMillis() < (startTimeStamp + (initalSeconds*1000))) {
-                seconds = (int) ((startTimeStamp + (initalSeconds*1000)) - System.currentTimeMillis()) / 1000;
+            if (System.currentTimeMillis() < (startTimeStamp + (initalSeconds * 1000))) {
+                seconds = (int) ((startTimeStamp + (initalSeconds * 1000)) - System.currentTimeMillis()) / 1000;
             } else {
                 seconds = 0;
-                this.finish();
             }
         }
-        
+
         hourField = (TextView) findViewById(R.id.hours);
         minuteField = (TextView) findViewById(R.id.minutes);
         secondField = (TextView) findViewById(R.id.seconds);
         updateView();
         Bundle bundle = new Bundle();
-        ChronoAlarm alarm = new ChronoAlarm(this, bundle, seconds);
+        if (seconds > 0) {
+            ChronoAlarm alarm = new ChronoAlarm(this, bundle, seconds);
 
-        new CountDownTimer(seconds * 1000, 1000) {
+            new CountDownTimer(seconds * 1000, 1000) {
 
-            public void onTick(long millisUntilFinished) {
-                seconds = (int) (millisUntilFinished / 1000);
-                updateView();
-            }
+                public void onTick(long millisUntilFinished) {
+                    seconds = (int) (millisUntilFinished / 1000);
+                    updateView();
+                }
 
-            public void onFinish() {
-                seconds = 0;
-                updateView();
-            }
-        }.start();
+                public void onFinish() {
+                    seconds = 0;
+                    updateView();
+                }
+            }.start();
+        }
 
     }
 
@@ -104,17 +105,24 @@ public class TimerActivity extends Activity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        if(seconds > 0) {
+        if (seconds > 0) {
             savedInstanceState.putBoolean("timerOn", true);
             savedInstanceState.putInt("initialSeconds", initalSeconds);
             savedInstanceState.putLong("startTimeStamp", startTimeStamp);
         }
         super.onSaveInstanceState(savedInstanceState);
-    }    
+    }
 
     @Override
     public void onPause() {
-        if(seconds > 0) ChronoJohnApp.setTimerOn(true);
+        if (seconds > 0) ChronoJohnApp.setTimerOn(true);
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        if (seconds == 0) this.finish();
+
+        super.onResume();
     }
 }

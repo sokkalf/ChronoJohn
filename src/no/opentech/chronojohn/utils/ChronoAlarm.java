@@ -1,13 +1,38 @@
+/*
+ * ChronoJohn, timer for Android
+ * (C)2011, 2012 by Christian Lønaas
+ *    <christian dot lonaas at discombobulator dot org>
+ *
+ * This file is part of ChronoJohn.
+ *
+ * ChronoJohn is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ChronoJohn is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ChronoJohn.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package no.opentech.chronojohn.utils;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.widget.Toast;
 import no.opentech.chronojohn.ChronoJohnApp;
+import no.opentech.chronojohn.activities.AlarmActivity;
 
 import java.util.Calendar;
 
@@ -20,13 +45,8 @@ public class ChronoAlarm extends BroadcastReceiver {
     private static Logger log = Logger.getLogger(ChronoAlarm.class);
     private final String REMINDER_BUNDLE = "MyReminderBundle";
 
-    // this constructor is called by the alarm manager.
     public ChronoAlarm(){ }
 
-    // you can use this constructor to create the alarm.
-    //  Just pass in the main activity as the context,
-    //  any extras you'd like to get later when triggered
-    //  and the timeout
     public ChronoAlarm(Context context, Bundle extras, int timeoutInSeconds){
         AlarmManager alarmMgr =
                 (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
@@ -41,6 +61,7 @@ public class ChronoAlarm extends BroadcastReceiver {
         ChronoJohnApp.setTimerOn(true);
         alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
                 pendingIntent);
+        log.debug("Setting new alarm at " + timeoutInSeconds + " seconds from now");
     }
 
     @Override
@@ -50,6 +71,13 @@ public class ChronoAlarm extends BroadcastReceiver {
 
         Toast.makeText(context, "Alarm went off", Toast.LENGTH_SHORT).show();
         log.debug("Alarm went off");
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+        wl.acquire();
+        Intent i = new Intent(context, AlarmActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(i);
+//        wl.release();
         ChronoJohnApp.setTimerOn(false);
     }
 }

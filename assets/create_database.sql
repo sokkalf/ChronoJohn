@@ -3,5 +3,6 @@
   name        TEXT,
   description TEXT,
   seconds     INTEGER,
+  started     INTEGER,
   created     INTEGER
 );

@@ -34,7 +34,9 @@ public class Timer implements Serializable {
     private int seconds;
     private String name;
     private String description;
+    private Date started;
     private Date created;
+    private boolean onGoing;
     private boolean defaultTimer;
     private boolean quickTimer;
 
@@ -44,6 +46,14 @@ public class Timer implements Serializable {
 
     public void setQuickTimer(boolean quickTimer) {
         this.quickTimer = quickTimer;
+    }
+
+    public Date getStarted() {
+        return started;
+    }
+
+    public void setStarted(Date started) {
+        this.started = started;
     }
 
     public Timer(String name, int seconds) {
@@ -103,5 +113,13 @@ public class Timer implements Serializable {
 
     public void setDefaultTimer(boolean defaultTimer) {
         this.defaultTimer = defaultTimer;
+    }
+
+    public boolean isOnGoing() {
+        return onGoing;
+    }
+
+    public void setOnGoing(boolean onGoing) {
+        this.onGoing = onGoing;
     }
 }

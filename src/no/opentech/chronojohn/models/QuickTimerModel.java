@@ -142,4 +142,8 @@ public class QuickTimerModel {
     public void setTimer(Timer timer) {
         this.timer = timer;
     }
+
+    public void start() {
+
+    }
 }
