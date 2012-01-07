@@ -20,7 +20,8 @@ import java.io.IOException;
  */
 public class AlarmActivity extends Activity {
     private static Logger log = Logger.getLogger(AlarmActivity.class);
-    
+    private MediaPlayer player;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
@@ -35,7 +36,7 @@ public class AlarmActivity extends Activity {
             }
         }
         
-        MediaPlayer player = new MediaPlayer();
+        player = new MediaPlayer();
         try {
         player.setDataSource(this, alert);
         final AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
@@ -48,5 +49,12 @@ public class AlarmActivity extends Activity {
         } catch (IOException ioe) {
             log.debug("IOException loading alarm sound");
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        player.stop();
+        this.finish();
+        super.onBackPressed();
     }
 }

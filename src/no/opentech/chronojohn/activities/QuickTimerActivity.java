@@ -33,7 +33,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import no.opentech.chronojohn.ChronoJohnApp;
 import no.opentech.chronojohn.R;
 import no.opentech.chronojohn.filters.InputFilterMinMax;
 import no.opentech.chronojohn.models.QuickTimerModel;

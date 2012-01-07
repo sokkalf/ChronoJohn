@@ -22,14 +22,12 @@
 
 package no.opentech.chronojohn.activities;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import no.opentech.chronojohn.ChronoJohnApp;
@@ -38,8 +36,6 @@ import no.opentech.chronojohn.adapter.TimerAdapter;
 import no.opentech.chronojohn.entities.Timer;
 import no.opentech.chronojohn.models.ViewTimersModel;
 import no.opentech.chronojohn.utils.Logger;
-
-import java.util.ArrayList;
 
 /**
  * Created by: Christian Lønaas

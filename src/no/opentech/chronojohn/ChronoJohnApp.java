@@ -24,7 +24,6 @@ package no.opentech.chronojohn;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Bundle;
 
 /**
  * Created by: Christian Lønaas
