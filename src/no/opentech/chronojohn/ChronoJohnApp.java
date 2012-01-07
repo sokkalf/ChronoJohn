@@ -24,6 +24,7 @@ package no.opentech.chronojohn;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Bundle;
 
 /**
  * Created by: Christian Lønaas
@@ -34,6 +35,7 @@ public class ChronoJohnApp extends Application {
     private static ChronoJohnApp instance;
     public static final String APP_NAME = "ChronoJohn";
     public static final boolean DEVELOPMENT_VERSION = true;
+    private static boolean timerOn;
 
     public ChronoJohnApp() {
         instance = this;
@@ -45,5 +47,13 @@ public class ChronoJohnApp extends Application {
 
     public static boolean isRelease() {
         return !DEVELOPMENT_VERSION;
+    }
+
+    public static void setTimerOn(boolean flag) {
+        timerOn = flag;
+    }
+
+    public static boolean isTimerOn() {
+        return timerOn;
     }
 }

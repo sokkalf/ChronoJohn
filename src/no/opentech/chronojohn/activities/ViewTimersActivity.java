@@ -37,6 +37,7 @@ import no.opentech.chronojohn.R;
 import no.opentech.chronojohn.adapter.TimerAdapter;
 import no.opentech.chronojohn.entities.Timer;
 import no.opentech.chronojohn.models.ViewTimersModel;
+import no.opentech.chronojohn.utils.Logger;
 
 import java.util.ArrayList;
 
@@ -48,9 +49,11 @@ import java.util.ArrayList;
 public class ViewTimersActivity extends ListActivity {
     private ViewTimersModel model;
     private Context context = ChronoJohnApp.getContext();
+    private static Logger log = Logger.getLogger(ViewTimersActivity.class);
     
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.viewtimers);
         setTitle("My Timers");
         model = new ViewTimersModel();
@@ -60,7 +63,6 @@ public class ViewTimersActivity extends ListActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Timer selected = model.getTimer(position);
-                
                 if(selected.isDefaultTimer()) {
                     newTimer();
                 } else if(selected.isQuickTimer()) {
@@ -78,5 +80,16 @@ public class ViewTimersActivity extends ListActivity {
     public void quickTimer() {
         Intent intent = new Intent(this, QuickTimerActivity.class);
         startActivity(intent);
+    }
+    
+    public void goToTimer() {
+        Intent intent = new Intent(this, TimerActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onPause() {
+
+        super.onPause();
     }
 }

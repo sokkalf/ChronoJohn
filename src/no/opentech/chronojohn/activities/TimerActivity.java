@@ -23,10 +23,14 @@
 package no.opentech.chronojohn.activities;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.TextView;
+import no.opentech.chronojohn.ChronoJohnApp;
 import no.opentech.chronojohn.R;
+import no.opentech.chronojohn.utils.ChronoAlarm;
 import no.opentech.chronojohn.utils.Logger;
 
 /**
@@ -36,17 +40,36 @@ import no.opentech.chronojohn.utils.Logger;
  */
 public class TimerActivity extends Activity {
     private static Logger log = Logger.getLogger(TimerActivity.class);
-    private int seconds;
+    private int seconds, initalSeconds;
+    private long startTimeStamp;
+
     private TextView hourField, minuteField, secondField;
+    private Context context = ChronoJohnApp.getContext();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer);
-        seconds = getIntent().getIntExtra("timerSeconds", 0);
+        seconds = initalSeconds = getIntent().getIntExtra("timerSeconds", 0);
+        startTimeStamp = System.currentTimeMillis();
+        
+        if(savedInstanceState != null) {
+            initalSeconds = savedInstanceState.getInt("initialSeconds");
+            startTimeStamp = savedInstanceState.getLong("startTimeStamp");
+            if(System.currentTimeMillis() < (startTimeStamp + (initalSeconds*1000))) {
+                seconds = (int) ((startTimeStamp + (initalSeconds*1000)) - System.currentTimeMillis()) / 1000;
+            } else {
+                seconds = 0;
+                this.finish();
+            }
+        }
+        
         hourField = (TextView) findViewById(R.id.hours);
         minuteField = (TextView) findViewById(R.id.minutes);
         secondField = (TextView) findViewById(R.id.seconds);
         updateView();
+        Bundle bundle = new Bundle();
+        ChronoAlarm alarm = new ChronoAlarm(this, bundle, seconds);
+
         new CountDownTimer(seconds * 1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -71,5 +94,27 @@ public class TimerActivity extends Activity {
         hourField.setText(String.format("%02d", hours));
         minuteField.setText(String.format("%02d", minutes));
         secondField.setText(String.format("%02d", secs));
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        log.debug("configuration changed - seconds now ; " + seconds);
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        if(seconds > 0) {
+            savedInstanceState.putBoolean("timerOn", true);
+            savedInstanceState.putInt("initialSeconds", initalSeconds);
+            savedInstanceState.putLong("startTimeStamp", startTimeStamp);
+        }
+        super.onSaveInstanceState(savedInstanceState);
+    }    
+
+    @Override
+    public void onPause() {
+        if(seconds > 0) ChronoJohnApp.setTimerOn(true);
+        super.onPause();
     }
 }

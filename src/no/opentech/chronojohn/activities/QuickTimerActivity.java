@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import no.opentech.chronojohn.ChronoJohnApp;
 import no.opentech.chronojohn.R;
 import no.opentech.chronojohn.filters.InputFilterMinMax;
 import no.opentech.chronojohn.models.QuickTimerModel;
@@ -111,6 +112,7 @@ public class QuickTimerActivity extends Activity {
         Intent timerIntent = new Intent(this, TimerActivity.class);
         timerIntent.putExtra("timerSeconds", model.getSeconds());
         startActivity(timerIntent);
+        this.finish();
     }
     
     private class ButtonListener implements View.OnClickListener {

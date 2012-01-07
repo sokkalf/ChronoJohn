@@ -11,8 +11,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activities.TimerActivity"/>
+        <activity android:name=".activities.TimerActivity" android:configChanges="keyboardHidden|orientation"/>
         <activity android:name=".activities.NewTimerActivity"/>
         <activity android:name=".activities.QuickTimerActivity"/>
+        <receiver android:name=".utils.ChronoAlarm"/>
     </application>
 </manifest>
