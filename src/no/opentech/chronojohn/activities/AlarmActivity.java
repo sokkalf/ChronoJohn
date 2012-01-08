@@ -22,6 +22,7 @@ public class AlarmActivity extends Activity {
     private static Logger log = Logger.getLogger(AlarmActivity.class);
     private MediaPlayer player;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
