@@ -27,6 +27,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -66,6 +69,27 @@ public class ViewTimersActivity extends ListActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inf = getMenuInflater();
+        inf.inflate(R.menu.viewtimersmenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.chronojohn_settings:
+                // go to settings
+                break;
+            case R.id.chronojohn_help:
+                startActivity(new Intent(this, HelpActivity.class));
+                break;
+
+        }
+        return true;
     }
 
     public void newTimer() {

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/chronojohn_settings" android:icon="@drawable/settings" android:title="@string/menu_settings" />
+    <item android:id="@+id/chronojohn_help" android:icon="@drawable/help" android:title="@string/menu_help" />
+</menu>

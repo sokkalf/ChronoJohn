@@ -5,6 +5,7 @@
         android:versionName="0.0.1">
     <uses-sdk android:minSdkVersion="7" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <application android:icon="@drawable/chronojohn_icon" android:label="@string/app_name">
         <activity android:name=".activities.ViewTimersActivity">
             <intent-filter>
@@ -16,6 +17,7 @@
         <activity android:name=".activities.NewTimerActivity"/>
         <activity android:name=".activities.QuickTimerActivity"/>
         <activity android:name=".activities.AlarmActivity"/>
+        <activity android:name=".activities.HelpActivity" android:label="ChronoJohn Help"/>
         <receiver android:name=".utils.ChronoAlarm"/>
     </application>
 </manifest>
