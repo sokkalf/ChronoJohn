@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+    <ImageView android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@drawable/exclamation"
+               android:layout_centerVertical="true"
+               android:layout_centerHorizontal="true"
+               android:id="@+id/exclamation_image"/>
+    <Button android:layout_width="75dip"
+            android:layout_height="40dip"
+            android:layout_below="@+id/exclamation_image"
+            android:layout_centerHorizontal="true"
+            android:text="Stop"
+            android:id="@+id/stopalarm"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Alarm finished"
+              android:textSize="24sp"
+              android:layout_centerHorizontal="true"
+              android:layout_above="@+id/exclamation"/>
+</RelativeLayout>

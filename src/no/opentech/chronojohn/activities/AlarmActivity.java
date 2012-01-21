@@ -7,8 +7,11 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import no.opentech.chronojohn.R;
 import no.opentech.chronojohn.utils.Logger;
 
 import java.io.IOException;
@@ -25,8 +28,18 @@ public class AlarmActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.alarm);
+
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD); // unlock screen
+
+        Button stopButton = (Button) findViewById(R.id.stopalarm);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                player.stop();
+                AlarmActivity.this.finish();
+            }
+        });
 
         Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if(alert == null){
