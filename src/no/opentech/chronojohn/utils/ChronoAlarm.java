@@ -43,6 +43,7 @@ import java.util.Calendar;
 public class ChronoAlarm extends BroadcastReceiver {
     private static Logger log = Logger.getLogger(ChronoAlarm.class);
     private final String REMINDER_BUNDLE = "MyReminderBundle";
+    public static PowerManager.WakeLock wl;
 
     public ChronoAlarm(){ }
 
@@ -71,11 +72,12 @@ public class ChronoAlarm extends BroadcastReceiver {
         Toast.makeText(context, "Alarm went off", Toast.LENGTH_SHORT).show();
         log.debug("Alarm went off");
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+        wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
         wl.acquire();
         Intent i = new Intent(context, AlarmActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(i);
+
 //        wl.release();
         ChronoJohnApp.setTimerOn(false);
     }

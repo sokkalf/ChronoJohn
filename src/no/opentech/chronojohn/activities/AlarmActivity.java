@@ -7,11 +7,13 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import no.opentech.chronojohn.R;
+import no.opentech.chronojohn.utils.ChronoAlarm;
 import no.opentech.chronojohn.utils.Logger;
 
 import java.io.IOException;
@@ -24,12 +26,13 @@ import java.io.IOException;
 public class AlarmActivity extends Activity {
     private static Logger log = Logger.getLogger(AlarmActivity.class);
     private MediaPlayer player;
-
+    private PowerManager.WakeLock wl = ChronoAlarm.wl;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.alarm);
-
+        
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD); // unlock screen
 
@@ -37,6 +40,7 @@ public class AlarmActivity extends Activity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 player.stop();
+                if(wl.isHeld()) wl.release();
                 AlarmActivity.this.finish();
             }
         });
@@ -68,6 +72,7 @@ public class AlarmActivity extends Activity {
     @Override
     public void onBackPressed() {
         player.stop();
+        if(wl.isHeld()) wl.release();
         this.finish();
         super.onBackPressed();
     }
