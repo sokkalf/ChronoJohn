@@ -27,6 +27,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.widget.Toast;
@@ -42,9 +43,9 @@ import java.util.Calendar;
  */
 public class ChronoAlarm extends BroadcastReceiver {
     private static Logger log = Logger.getLogger(ChronoAlarm.class);
-    private final String REMINDER_BUNDLE = "MyReminderBundle";
+    private final String REMINDER_BUNDLE = "AlarmBundle";
     public static PowerManager.WakeLock wl;
-
+    private static Context context = ChronoJohnApp.getContext();
     public ChronoAlarm(){ }
 
     public ChronoAlarm(Context context, Bundle extras, int timeoutInSeconds){
@@ -53,12 +54,12 @@ public class ChronoAlarm extends BroadcastReceiver {
         Intent intent = new Intent(context, ChronoAlarm.class);
         intent.putExtra(REMINDER_BUNDLE, extras);
         PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(context, 0, intent,
+                PendingIntent.getBroadcast(context, 1+(int)(timeoutInSeconds*(Math.random()*100)), intent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(System.currentTimeMillis());
         time.add(Calendar.SECOND, timeoutInSeconds);
-        ChronoJohnApp.setTimerOn(true);
+        ChronoJohnApp.registerAlarm(extras.getString("alarmName"), timeoutInSeconds, context);
         alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
                 pendingIntent);
         log.debug("Setting new alarm at " + timeoutInSeconds + " seconds from now");
@@ -67,17 +68,19 @@ public class ChronoAlarm extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // here you can get the extras you passed in when creating the alarm
-        //intent.getBundleExtra(REMINDER_BUNDLE));
-
-        Toast.makeText(context, "Alarm went off", Toast.LENGTH_SHORT).show();
-        log.debug("Alarm went off");
+        ChronoJohnApp.restoreState(context);
+        Bundle alarmBundle = intent.getBundleExtra(REMINDER_BUNDLE);
+        String alarmName = alarmBundle.getString("alarmName") != null ? alarmBundle.getString("alarmName") : "default";
+        log.debug("Alarm is " + (ChronoJohnApp.isAlarmRunning(alarmName) ? "registered" : "not registered"));
+        ChronoJohnApp.deRegisterAlarm(alarmName, context);
+        Toast.makeText(context, "Alarm '" + alarmName + "' went off", Toast.LENGTH_SHORT).show();
+        log.debug("Alarm '" + alarmName + "' went off");
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         if(null != wl && wl.isHeld()) wl.release();
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
         wl.acquire();
         Intent i = new Intent(context, AlarmActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ChronoJohnApp.setTimerOn(false);
         context.startActivity(i);
     }
 }

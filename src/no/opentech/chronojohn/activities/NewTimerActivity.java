@@ -24,6 +24,8 @@ package no.opentech.chronojohn.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import no.opentech.chronojohn.R;
 
 /**
@@ -36,5 +38,7 @@ public class NewTimerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTitle("Create a new timer");
         setContentView(R.layout.new_timer);
+        TextView label = (TextView) findViewById(R.id.timer_name_label);
+        label.setVisibility(View.GONE);
     }
 }

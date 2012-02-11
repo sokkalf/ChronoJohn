@@ -110,6 +110,7 @@ public class QuickTimerActivity extends Activity {
         }
         Intent timerIntent = new Intent(this, TimerActivity.class);
         timerIntent.putExtra("timerSeconds", model.getSeconds());
+        timerIntent.putExtra("alarmName", "Quick timer");
         startActivity(timerIntent);
         this.finish();
     }

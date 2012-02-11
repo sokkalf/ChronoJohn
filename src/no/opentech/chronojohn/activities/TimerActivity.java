@@ -42,6 +42,7 @@ public class TimerActivity extends Activity {
     private static Logger log = Logger.getLogger(TimerActivity.class);
     private int seconds, initalSeconds;
     private long startTimeStamp;
+    private String alarmName;
 
     private TextView hourField, minuteField, secondField;
     private Context context = ChronoJohnApp.getContext();
@@ -50,6 +51,8 @@ public class TimerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer);
         seconds = initalSeconds = getIntent().getIntExtra("timerSeconds", 0);
+        alarmName = getIntent().getStringExtra("alarmName");
+        setTitle((alarmName != null) ? alarmName : "default");
         startTimeStamp = System.currentTimeMillis();
 
         if (savedInstanceState != null) {
@@ -67,6 +70,7 @@ public class TimerActivity extends Activity {
         secondField = (TextView) findViewById(R.id.seconds);
         updateView();
         Bundle bundle = new Bundle();
+        bundle.putString("alarmName", alarmName);
         if (seconds > 0) {
             ChronoAlarm alarm = new ChronoAlarm(this, bundle, seconds);
 
@@ -115,7 +119,6 @@ public class TimerActivity extends Activity {
 
     @Override
     public void onPause() {
-        if (seconds > 0) ChronoJohnApp.setTimerOn(true);
         super.onPause();
     }
 
