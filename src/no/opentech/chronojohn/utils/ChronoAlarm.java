@@ -72,13 +72,12 @@ public class ChronoAlarm extends BroadcastReceiver {
         Toast.makeText(context, "Alarm went off", Toast.LENGTH_SHORT).show();
         log.debug("Alarm went off");
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if(null != wl && wl.isHeld()) wl.release();
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
         wl.acquire();
         Intent i = new Intent(context, AlarmActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(i);
-
-//        wl.release();
         ChronoJohnApp.setTimerOn(false);
+        context.startActivity(i);
     }
 }
