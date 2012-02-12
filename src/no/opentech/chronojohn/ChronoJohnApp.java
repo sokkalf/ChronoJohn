@@ -36,20 +36,21 @@ import java.util.Map;
  * Time: 15:55
  */
 public class ChronoJohnApp extends Application {
-    private static ChronoJohnApp instance;
+    private static Context context;
     public static final String APP_NAME = "ChronoJohn";
     public static final boolean DEVELOPMENT_VERSION = true;
     public static final String PREFS_NAME = "ChronoJohnSettings";
     public static final String TIMERS_NAME = "ChronoJohnTimers";
+    public static final int MAX_HOUR = 200;
+    public static final int MAX_MINUTE = 59;
+    public static final int MAX_SECOND = 59;
     private static Logger log = Logger.getLogger(ChronoJohnApp.class);
     private static Map<String, Long> runningAlarms = new HashMap<String, Long>();
 
-    public ChronoJohnApp() {
-        instance = this;
-    }
-
     @Override
     public void onCreate() {
+        super.onCreate();
+        ChronoJohnApp.context = getApplicationContext();
         log.debug("ChronoJohn starting up");
         SharedPreferences timers = getSharedPreferences(TIMERS_NAME, 0);
         for(String key : timers.getAll().keySet()) {
@@ -63,8 +64,12 @@ public class ChronoJohnApp extends Application {
         super.onTerminate();
     }
 
+    public ChronoJohnApp() {
+
+    }
+
     public static Context getContext() {
-        return instance;
+        return ChronoJohnApp.context;
     }
 
     public static boolean isRelease() {

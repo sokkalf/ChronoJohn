@@ -22,15 +22,13 @@
 
 package no.opentech.chronojohn.activities;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import no.opentech.chronojohn.ChronoJohnApp;
@@ -49,6 +47,7 @@ public class ViewTimersActivity extends ListActivity {
     private ViewTimersModel model;
     private Context context = ChronoJohnApp.getContext();
     private static Logger log = Logger.getLogger(ViewTimersActivity.class);
+    private static final int NEWTIMERACTIVITY = 99;
     
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +57,7 @@ public class ViewTimersActivity extends ListActivity {
         model = new ViewTimersModel();
         setListAdapter(new TimerAdapter(this, R.layout.list_timers, model.getTimers()));
         ListView lv = getListView();
+        registerForContextMenu(lv);
         lv.setCacheColorHint(Color.parseColor("#00000000"));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -66,10 +66,43 @@ public class ViewTimersActivity extends ListActivity {
                     newTimer();
                 } else if(selected.isQuickTimer()) {
                     quickTimer();
+                } else {
+                    Intent timerIntent = new Intent(ViewTimersActivity.this, TimerActivity.class);
+                    timerIntent.putExtra("timerSeconds", selected.getSeconds());
+                    timerIntent.putExtra("alarmName", selected.getName());
+                    startActivity(timerIntent);
                 }
             }
         });
     }
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inf = getMenuInflater();
+        inf.inflate(R.menu.viewtimers_context_menu, menu);
+        menu.setHeaderTitle(R.string.context_menu_title);
+    }
+
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Timer selectedItem = model.getTimer(info.position);
+        switch (item.getItemId()) {
+            case R.id.renametimer:
+                // rename
+                break;
+            case R.id.deletetimer:
+                model.delete(selectedItem);
+                ((TimerAdapter)getListAdapter()).notifyDataSetChanged();
+                break;
+
+        }
+        return true;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,7 +127,7 @@ public class ViewTimersActivity extends ListActivity {
 
     public void newTimer() {
         Intent intent = new Intent(this, NewTimerActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, NEWTIMERACTIVITY);
     }
     
     public void quickTimer() {
@@ -105,6 +138,19 @@ public class ViewTimersActivity extends ListActivity {
     public void goToTimer() {
         Intent intent = new Intent(this, TimerActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+              switch (requestCode) {
+              case NEWTIMERACTIVITY:
+                  if (resultCode == Activity.RESULT_OK) {
+                      model.refresh();
+                      ((TimerAdapter)getListAdapter()).notifyDataSetChanged();
+                  }
+                  break;
+              }
     }
 
     @Override

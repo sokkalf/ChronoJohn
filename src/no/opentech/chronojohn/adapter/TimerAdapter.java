@@ -41,26 +41,34 @@ import java.util.ArrayList;
  */
 public class TimerAdapter extends ArrayAdapter<Timer> {
     ArrayList<Timer> timers;
+
     public TimerAdapter(Context context, int textViewResourceId, ArrayList<Timer> timers) {
         super(context, textViewResourceId, timers);
         this.timers = timers;
+    }
+
+    public String timeify(int seconds) {
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+        seconds = (seconds - ((hours*3600)+(minutes*60)));
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
-            LayoutInflater vi = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(R.layout.row, null);
         }
         Timer timer = timers.get(position);
-        if(null != timer) {
+        if (null != timer) {
             TextView text = (TextView) v.findViewById(R.id.itemtext);
             TextView summary = (TextView) v.findViewById(R.id.summary);
             text.setTextColor(Color.LTGRAY);
             text.setText(timer.getName());
             summary.setTextColor(Color.CYAN);
-            summary.setText((null != timer.getDescription() && timer.getDescription().length() > 0) ? timer.getDescription() : "Duration : " + timer.getSeconds());
+            summary.setText((null != timer.getDescription() && timer.getDescription().length() > 0 && !timer.getDescription().equals("null")) ? timer.getDescription() : timeify(timer.getSeconds()));
         }
         return v;
     }

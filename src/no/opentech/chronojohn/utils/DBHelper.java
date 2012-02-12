@@ -25,6 +25,7 @@ package no.opentech.chronojohn.utils;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import no.opentech.chronojohn.ChronoJohnApp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,23 +52,23 @@ public class DBHelper extends SQLiteOpenHelper {
         myContext = context;
     }
 
-    @Override
     public void onCreate(SQLiteDatabase db) {
         log.debug("creating database");
         try {
             InputStream is = myContext.getAssets().open("create_database.sql");
             String[] statements = parseSqlFile(is);
-            for(String statement : statements)
+            for(String statement : statements) {
                 db.execSQL(statement);
+            }
 
         } catch(Exception e) {
+            log.debug("error creating database");
             e.printStackTrace();
         }
     }
 
-    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS item;");
+        db.execSQL("DROP TABLE IF EXISTS timer;");
         //TODO: handle updates
     }
 

@@ -31,6 +31,7 @@ import java.util.Date;
  * Time: 16:23
  */
 public class Timer implements Serializable {
+    private long id;
     private int seconds;
     private String name;
     private String description;
@@ -39,6 +40,14 @@ public class Timer implements Serializable {
     private boolean onGoing;
     private boolean defaultTimer;
     private boolean quickTimer;
+
+    public long getId() {
+        return id;
+    }
+    
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public boolean isQuickTimer() {
         return quickTimer;
@@ -54,6 +63,10 @@ public class Timer implements Serializable {
 
     public void setStarted(Date started) {
         this.started = started;
+    }
+
+    public Timer() {
+
     }
 
     public Timer(String name, int seconds) {

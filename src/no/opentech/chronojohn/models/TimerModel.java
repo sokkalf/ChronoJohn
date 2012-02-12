@@ -1,55 +1,51 @@
-/*
- * ChronoJohn, timer for Android
- * (C)2011, 2012 by Christian Lønaas
- *    <christian dot lonaas at discombobulator dot org>
- *
- * This file is part of ChronoJohn.
- *
- * ChronoJohn is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * ChronoJohn is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with ChronoJohn.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
 package no.opentech.chronojohn.models;
 
 import android.widget.EditText;
 import no.opentech.chronojohn.ChronoJohnApp;
 import no.opentech.chronojohn.entities.Timer;
 import no.opentech.chronojohn.utils.Logger;
+import no.opentech.chronojohn.utils.Utils;
+
+import java.util.Date;
 
 /**
  * Created by: Christian Lønaas
- * Date: 31.12.11
- * Time: 0:16
+ * Date: 11.02.12
+ * Time: 23:46
  */
-public class QuickTimerModel {
-    private static Logger log = Logger.getLogger(QuickTimerModel.class);
-
+public class TimerModel {
+    private static Logger log = Logger.getLogger(TimerModel.class);
     private int hourFieldValue = 0;
     private int minuteFieldValue = 0;
     private int secondFieldValue = 0;
-    private int seconds;
     private EditText hourField, minuteField, secondField;
     private Timer timer;
     private boolean editing = false;
 
-    public QuickTimerModel(EditText hour, EditText minute, EditText second) {
+    public TimerModel(EditText hour, EditText minute, EditText second) {
+        timer = new Timer();
         this.hourField = hour;
         this.minuteField = minute;
         this.secondField = second;
         setHour(hourFieldValue);
         setMinute(minuteFieldValue);
         setSecond(secondFieldValue);
+    }
+
+    public String getAlarmName() {
+        return timer.getName();
+    }
+
+    public void setAlarmName(String alarmName) {
+        timer.setName(alarmName);
+    }
+    
+    public String getAlarmDescription() {
+        return timer.getDescription();
+    }
+    
+    public void setAlarmDescription(String desc) {
+        timer.setDescription(desc);
     }
 
     public boolean isEditing() {
@@ -97,13 +93,13 @@ public class QuickTimerModel {
     }
 
     public int getSeconds() {
-        return seconds;
+        return timer.getSeconds();
     }
 
     public void setSeconds(int seconds) {
-        this.seconds = seconds;
+        timer.setSeconds(seconds);
     }
-    
+
     public void updateSeconds() {
         int secs = (hourFieldValue*3600) + (minuteFieldValue*60) + secondFieldValue;
         setSeconds(secs);
@@ -143,5 +139,11 @@ public class QuickTimerModel {
 
     public void start() {
 
+    }    
+    
+    public void save() {
+        log.debug("Saving alarm " + timer.getName() + ", " + timer.getSeconds() + " seconds.");
+        timer.setCreated(new Date());
+        Utils.getTimerRepository().insert(timer);
     }
 }

@@ -22,8 +22,12 @@
 
 package no.opentech.chronojohn.utils;
 
+import android.content.Context;
 import no.opentech.chronojohn.ChronoJohnApp;
 import no.opentech.chronojohn.crud.TimerRepository;
+import no.opentech.chronojohn.entities.Timer;
+
+import java.util.Date;
 
 /**
  * Created by: Christian Lønaas
@@ -31,16 +35,38 @@ import no.opentech.chronojohn.crud.TimerRepository;
  * Time: 16:37
  */
 public class Utils {
-    private static TimerRepository timerRepository = getTimerRepository();
     private static DBHelper dBHelper = getDBHelper();
+    private static TimerRepository timerRepository = getTimerRepository();
 
     public static DBHelper getDBHelper() {
-        if(null != dBHelper) return dBHelper;
+        if (null != dBHelper) return dBHelper;
         else return new DBHelper(ChronoJohnApp.getContext());
     }
 
     public static TimerRepository getTimerRepository() {
-        if(null != timerRepository) return timerRepository;
+        if (null != timerRepository) return timerRepository;
         else return new TimerRepository(getDBHelper());
+    }
+
+    public static long getTimeStamp(Date date) {
+        if (null != date) return date.getTime();
+        else return new Date().getTime();
+    }
+
+    public static long getTimeStampNow() {
+        return new Date().getTime();
+    }
+
+    public static Timer createTimerFromValues(long id, String name, String desc, int seconds,
+                                              long created) {
+        Timer t = new Timer();
+        t.setId(id);
+        t.setName(name);
+        t.setDescription(desc);
+        t.setSeconds(seconds);
+        Date createdDate = new Date();
+        createdDate.setTime(created);
+        t.setCreated(createdDate);
+        return t;
     }
 }
