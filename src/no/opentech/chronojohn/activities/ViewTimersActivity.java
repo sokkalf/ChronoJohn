@@ -48,7 +48,8 @@ public class ViewTimersActivity extends ListActivity {
     private Context context = ChronoJohnApp.getContext();
     private static Logger log = Logger.getLogger(ViewTimersActivity.class);
     private static final int NEWTIMERACTIVITY = 99;
-    
+    private static ListView lv;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -56,15 +57,15 @@ public class ViewTimersActivity extends ListActivity {
         setTitle("My Timers");
         model = new ViewTimersModel();
         setListAdapter(new TimerAdapter(this, R.layout.list_timers, model.getTimers()));
-        ListView lv = getListView();
+        lv = getListView();
         registerForContextMenu(lv);
         lv.setCacheColorHint(Color.parseColor("#00000000"));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Timer selected = model.getTimer(position);
-                if(selected.isDefaultTimer()) {
+                if (selected.isDefaultTimer()) {
                     newTimer();
-                } else if(selected.isQuickTimer()) {
+                } else if (selected.isQuickTimer()) {
                     quickTimer();
                 } else {
                     Intent timerIntent = new Intent(ViewTimersActivity.this, TimerActivity.class);
@@ -74,6 +75,10 @@ public class ViewTimersActivity extends ListActivity {
                 }
             }
         });
+     }
+
+    public void refresh() {
+        ((TimerAdapter)getListAdapter()).notifyDataSetChanged();
     }
 
 
@@ -96,7 +101,7 @@ public class ViewTimersActivity extends ListActivity {
                 break;
             case R.id.deletetimer:
                 model.delete(selectedItem);
-                ((TimerAdapter)getListAdapter()).notifyDataSetChanged();
+                refresh();
                 break;
 
         }
@@ -147,15 +152,9 @@ public class ViewTimersActivity extends ListActivity {
               case NEWTIMERACTIVITY:
                   if (resultCode == Activity.RESULT_OK) {
                       model.refresh();
-                      ((TimerAdapter)getListAdapter()).notifyDataSetChanged();
+                      refresh();
                   }
                   break;
               }
-    }
-
-    @Override
-    public void onPause() {
-
-        super.onPause();
     }
 }

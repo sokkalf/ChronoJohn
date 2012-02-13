@@ -91,6 +91,10 @@ public class ChronoJohnApp extends Application {
     public static boolean isAlarmRunning(String name) {
         return runningAlarms.containsKey(name);
     }
+    
+    public static long getAlarmMillis(String name) {
+        return runningAlarms.get(name);
+    }
 
     public static void deRegisterAlarm(String name, Context context) {
         log.debug("Deregistering alarm " + name);

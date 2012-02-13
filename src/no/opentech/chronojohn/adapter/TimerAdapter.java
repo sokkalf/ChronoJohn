@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import no.opentech.chronojohn.ChronoJohnApp;
 import no.opentech.chronojohn.R;
 import no.opentech.chronojohn.entities.Timer;
 
@@ -41,17 +42,24 @@ import java.util.ArrayList;
  */
 public class TimerAdapter extends ArrayAdapter<Timer> {
     ArrayList<Timer> timers;
+    private Context context;
 
     public TimerAdapter(Context context, int textViewResourceId, ArrayList<Timer> timers) {
         super(context, textViewResourceId, timers);
+        this.context = context;
         this.timers = timers;
     }
 
-    public String timeify(int seconds) {
+    public String timeify(Timer timer) {
+        int seconds = timer.getSecondsLeft();
+        if (seconds <= 0) {
+            seconds = timer.getSeconds();
+            ChronoJohnApp.deRegisterAlarm(timer.getName(), context);
+        }
         int hours = seconds / 3600;
         int minutes = (seconds % 3600) / 60;
         seconds = (seconds - ((hours*3600)+(minutes*60)));
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        return timer.isOnGoing() ? "Running" : String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     @Override
@@ -67,8 +75,9 @@ public class TimerAdapter extends ArrayAdapter<Timer> {
             TextView summary = (TextView) v.findViewById(R.id.summary);
             text.setTextColor(Color.LTGRAY);
             text.setText(timer.getName());
-            summary.setTextColor(Color.CYAN);
-            summary.setText((null != timer.getDescription() && timer.getDescription().length() > 0 && !timer.getDescription().equals("null")) ? timer.getDescription() : timeify(timer.getSeconds()));
+            summary.setTextColor(timer.isOnGoing() ? Color.GREEN : Color.CYAN);
+            summary.setText((null != timer.getDescription() && timer.getDescription().length() > 0 &&
+                    !timer.getDescription().equals("null")) ? timer.getDescription() : timeify(timer));
         }
         return v;
     }

@@ -22,6 +22,7 @@
 
 package no.opentech.chronojohn.entities;
 
+import no.opentech.chronojohn.ChronoJohnApp;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -57,10 +58,26 @@ public class Timer implements Serializable {
         this.quickTimer = quickTimer;
     }
 
-    public Date getStarted() {
-        return started;
+    public Date getDone() {
+        return new Date(getDoneMillis());
+    }
+    
+    public long getDoneMillis() {
+        if(isOnGoing()) return ChronoJohnApp.getAlarmMillis(getName());
+        
+        return 0;
     }
 
+    public int getSecondsLeft() {
+        int seconds;
+        if(isOnGoing()) {
+            long finished = getDoneMillis()/1000;
+            long now = System.currentTimeMillis()/1000;
+            seconds = (int)(finished-now);
+            return seconds;
+        } else return getSeconds();
+    }
+    
     public void setStarted(Date started) {
         this.started = started;
     }
@@ -129,10 +146,7 @@ public class Timer implements Serializable {
     }
 
     public boolean isOnGoing() {
-        return onGoing;
+        return ChronoJohnApp.isAlarmRunning(getName());
     }
 
-    public void setOnGoing(boolean onGoing) {
-        this.onGoing = onGoing;
-    }
 }
