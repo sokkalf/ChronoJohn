@@ -43,7 +43,7 @@ import java.util.Calendar;
  */
 public class ChronoAlarm extends BroadcastReceiver {
     private static Logger log = Logger.getLogger(ChronoAlarm.class);
-    private final String REMINDER_BUNDLE = "AlarmBundle";
+    public static final String REMINDER_BUNDLE = "AlarmBundle";
     public static PowerManager.WakeLock wl;
     private static Context context = ChronoJohnApp.getContext();
     public ChronoAlarm(){ }
@@ -72,15 +72,17 @@ public class ChronoAlarm extends BroadcastReceiver {
         Bundle alarmBundle = intent.getBundleExtra(REMINDER_BUNDLE);
         String alarmName = alarmBundle.getString("alarmName") != null ? alarmBundle.getString("alarmName") : "default";
         log.debug("Alarm is " + (ChronoJohnApp.isAlarmRunning(alarmName) ? "registered" : "not registered"));
-        ChronoJohnApp.deRegisterAlarm(alarmName, context);
-        Toast.makeText(context, "Alarm '" + alarmName + "' went off", Toast.LENGTH_SHORT).show();
-        log.debug("Alarm '" + alarmName + "' went off");
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        if(null != wl && wl.isHeld()) wl.release();
-        wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
-        wl.acquire();
-        Intent i = new Intent(context, AlarmActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(i);
+        if (ChronoJohnApp.isAlarmRunning(alarmName)) {
+            ChronoJohnApp.deRegisterAlarm(alarmName, context);
+            Toast.makeText(context, "Alarm '" + alarmName + "' went off", Toast.LENGTH_SHORT).show();
+            log.debug("Alarm '" + alarmName + "' went off");
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            if (null != wl && wl.isHeld()) wl.release();
+            wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+            wl.acquire();
+            Intent i = new Intent(context, AlarmActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        }
     }
 }

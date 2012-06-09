@@ -103,6 +103,10 @@ public class ViewTimersActivity extends ListActivity {
                 model.delete(selectedItem);
                 refresh();
                 break;
+            case R.id.canceltimer:
+                String name = selectedItem.getName();
+                ChronoJohnApp.cancelAlarm(name);
+                break;
 
         }
         return true;
@@ -146,15 +150,23 @@ public class ViewTimersActivity extends ListActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        refresh();
+        model.refresh();
         super.onActivityResult(requestCode, resultCode, data);
-              switch (requestCode) {
-              case NEWTIMERACTIVITY:
-                  if (resultCode == Activity.RESULT_OK) {
-                      model.refresh();
-                      refresh();
-                  }
-                  break;
-              }
+        switch (requestCode) {
+            case NEWTIMERACTIVITY:
+                if (resultCode == Activity.RESULT_OK) {
+                }
+                break;
+        }
     }
 }

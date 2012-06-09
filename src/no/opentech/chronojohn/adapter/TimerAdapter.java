@@ -54,7 +54,6 @@ public class TimerAdapter extends ArrayAdapter<Timer> {
         int seconds = timer.getSecondsLeft();
         if (seconds <= 0) {
             seconds = timer.getSeconds();
-            ChronoJohnApp.deRegisterAlarm(timer.getName(), context);
         }
         int hours = seconds / 3600;
         int minutes = (seconds % 3600) / 60;

@@ -22,9 +22,14 @@
 
 package no.opentech.chronojohn;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import no.opentech.chronojohn.utils.ChronoAlarm;
 import no.opentech.chronojohn.utils.Logger;
 
 import java.util.HashMap;
@@ -54,8 +59,10 @@ public class ChronoJohnApp extends Application {
         log.debug("ChronoJohn starting up");
         SharedPreferences timers = getSharedPreferences(TIMERS_NAME, 0);
         for(String key : timers.getAll().keySet()) {
-            if(timers.getLong(key, 0) > System.currentTimeMillis()) // if alarm time is not here yet, restore
+            if(timers.getLong(key, 0) > System.currentTimeMillis()) { // if alarm time is not here yet, restore
+                log.debug("Restoring " + key);
                 runningAlarms.put(key, timers.getLong(key, System.currentTimeMillis()));
+            }
         }
     }
 
@@ -82,9 +89,7 @@ public class ChronoJohnApp extends Application {
         runningAlarms.put(name, finishedMillis);
         SharedPreferences timers = context.getSharedPreferences(ChronoJohnApp.TIMERS_NAME, 0);
         SharedPreferences.Editor editor = timers.edit();
-        for(String key : runningAlarms.keySet()) {
-            editor.putLong(key, runningAlarms.get(key));
-        }
+        editor.putLong(name, runningAlarms.get(name));
         editor.commit();
     }
 
@@ -99,16 +104,22 @@ public class ChronoJohnApp extends Application {
     public static void deRegisterAlarm(String name, Context context) {
         log.debug("Deregistering alarm " + name);
         SharedPreferences timers = context.getSharedPreferences(TIMERS_NAME, 0);
-        timers.edit().remove(name);
-        timers.edit().commit();
+        timers.edit().remove(name).commit();
         runningAlarms.remove(name);
+    }
+
+    public static void cancelAlarm(String name) {
+        deRegisterAlarm(name, getContext());
     }
 
     public static void restoreState(Context context) {
         log.debug("ChronoJohn restoring state");
         SharedPreferences timers = context.getSharedPreferences(TIMERS_NAME, 0);
         for(String key : timers.getAll().keySet()) {
-            runningAlarms.put(key, timers.getLong(key, System.currentTimeMillis()));
+            if(timers.getLong(key, 0) > System.currentTimeMillis()) { // if alarm time is not here yet, restore
+                log.debug("Restoring " + key);
+                runningAlarms.put(key, timers.getLong(key, System.currentTimeMillis()));
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ package no.opentech.chronojohn.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -99,6 +100,14 @@ public class TimerActivity extends Activity {
         hourField.setText(String.format("%02d", hours));
         minuteField.setText(String.format("%02d", minutes));
         secondField.setText(String.format("%02d", secs));
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(this, ViewTimersActivity.class);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
+        this.finish();
     }
 
     @Override

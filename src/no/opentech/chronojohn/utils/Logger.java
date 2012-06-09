@@ -34,14 +34,13 @@ import no.opentech.chronojohn.ChronoJohnApp;
 public class Logger {
     public static boolean enabled = !ChronoJohnApp.isRelease();
     public static String TAG;
-    public static Logger logger;
-    
+
     public Logger(String name) {
         TAG = ChronoJohnApp.APP_NAME + "/" + name;
     }
 
     public static Logger getLogger(Class c) {
-        logger = new Logger(c.getName());
+        Logger logger = new Logger(c.getName());
         return logger;
     }
     
